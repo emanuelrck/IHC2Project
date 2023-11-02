@@ -28,6 +28,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -36,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private final int FINE_PERMISSION_CODE = 1;
     private GoogleMap myMap;
+    private Marker markerFonte;
 
     private Button cameraBtn;
     private Button clipboardBtn;
@@ -105,22 +107,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
+
+
         //fazer marker estatico
         LatLng botanicoFonte = new LatLng(40.2058, -8.4214);
-        //myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(botanico, 17.0f));
+      //myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(botanico, 17.0f));
         MarkerOptions optionsFonte = new MarkerOptions().position(botanicoFonte).title("Botanico");
         optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
-        myMap.addMarker(optionsFonte);
+        markerFonte = myMap.addMarker(optionsFonte);
+
 
         // current location
         LatLng current = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
 
         myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current, 17.0f));
-        MarkerOptions optionsCurrent = new MarkerOptions().position(current).title("Botanico");
+        MarkerOptions optionsCurrent = new MarkerOptions().position(current).title("currentLocation");
 
 
-        optionsCurrent.icon(BitmapDescriptorFactory.fromResource(R.drawable.current));
+        //optionsCurrent.icon(BitmapDescriptorFactory.fromResource(R.drawable.current));
+        optionsCurrent.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         myMap.addMarker(optionsCurrent);
+
+        myMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if (marker.equals(markerFonte)) {
+                    Toast.makeText(getBaseContext(), "Fonte info window", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
 
     }
 

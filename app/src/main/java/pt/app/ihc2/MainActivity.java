@@ -1,7 +1,8 @@
 package pt.app.ihc2;
-
+import android.os.AsyncTask;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -30,19 +31,31 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private final int FINE_PERMISSION_CODE = 1;
     private GoogleMap myMap;
     private Marker markerFonte;
+    private Marker markerArv;
+    private List<Polyline> polylines = new ArrayList<>();
+    private List<LatLng> referencePoints = new ArrayList<>();
+
+    LatLng current;
+
 
     private Button cameraBtn;
     private Button clipboardBtn;
     private Button caminhadaBtn;
-    private boolean visitedFonte = false;
+    private boolean visitedFonte = true;
+    private boolean visitedArv = false;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -61,14 +74,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     public void initBtn(){
         cameraBtn = findViewById(R.id.cameraBtn);
+        caminhadaBtn = findViewById(R.id.caminhoBtn);
+        clipboardBtn = findViewById(R.id.inventarioBtn);
+
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openCamera();
             }
         });
-        caminhadaBtn = findViewById(R.id.caminhoBtn);
-        clipboardBtn = findViewById(R.id.inventarioBtn);
+        caminhadaBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makepath();
+            }
+        });
         clipboardBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -79,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void openClipBoar(){
         Intent intent = new Intent(this,Clipboard.class);
         intent.putExtra("fonte",visitedFonte);
+        intent.putExtra("arvore",visitedArv);
         startActivity(intent);
     }
     public void openCamera(){
@@ -113,32 +134,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //-------------- Markers ---------
 
         //fazer marker estatico
+        // FONTE
         LatLng botanicoFonte = new LatLng(40.2058, -8.4214);
-      //myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(botanico, 17.0f));
+        referencePoints.add(botanicoFonte);
         MarkerOptions optionsFonte = new MarkerOptions().position(botanicoFonte).title("Botanico");
         optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
         markerFonte = myMap.addMarker(optionsFonte);
 
-        // current location
-        LatLng current = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
+        //ARVORE
+        LatLng botanicoArv = new LatLng(40.2050, -8.4210);
+        referencePoints.add(botanicoArv);
+        MarkerOptions optionsArv = new MarkerOptions().position(botanicoArv).title("Arvore");
+        optionsArv.icon(BitmapDescriptorFactory.fromResource(R.drawable.arvoreflor));
+        markerArv = myMap.addMarker(optionsArv);
 
+        // current location
+        current = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
         myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current, 17.0f));
         MarkerOptions optionsCurrent = new MarkerOptions().position(current).title("currentLocation");
-
-
-        //optionsCurrent.icon(BitmapDescriptorFactory.fromResource(R.drawable.current));
         optionsCurrent.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         myMap.addMarker(optionsCurrent);
 
         myMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if (marker.equals(markerFonte)) {
-                    Toast.makeText(getBaseContext(), "Fonte info window", Toast.LENGTH_SHORT).show();
+                clearPreviousPolylines();
+                drawLineBetweenMarkers(marker.getPosition(), current);
 
-                    return true;
-                }
-                return false;
+                return true;
             }
         });
         //------------------------------------
@@ -178,6 +201,41 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    private void drawLineBetweenMarkers(LatLng orig, LatLng dest) {
+        if (myMap != null) {
+
+            PolylineOptions polylineOptions = new PolylineOptions()
+                    .add(orig, dest)
+                    .width(5) // Line width
+                    .color(Color.GREEN); // Line color
+          polylines.add(myMap.addPolyline(polylineOptions));
+        }
+    }
+    private void clearPreviousPolylines() {
+        for (Polyline polyline : polylines) {
+            polyline.remove();
+        }
+        polylines.clear(); // Clear the list
+    }
+
+    private void makepath(){
+        LatLng last = current;
+        if(polylines.size() == 0){
+            for (LatLng point : referencePoints ) {
+               drawLineBetweenMarkers(last,point);
+               last = point;
+            }
+
+        }else if (polylines.size() == referencePoints.size()){
+            clearPreviousPolylines();
+        }else {
+            clearPreviousPolylines();
+            for (LatLng point : referencePoints ) {
+                drawLineBetweenMarkers(last,point);
+                last = point;
+            }
+        }
     }
 
 }

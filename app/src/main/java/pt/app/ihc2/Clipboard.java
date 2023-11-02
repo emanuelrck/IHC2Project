@@ -11,6 +11,7 @@ import android.widget.Toast;
 public class Clipboard extends AppCompatActivity {
 
     private boolean visitedFonte;
+    private boolean visitedArv;
     private Button FonteT;
     private Button FonteF;
     @Override
@@ -18,9 +19,20 @@ public class Clipboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clipboard);
 
-
         initBtns();
+        showBtns();
 
+    }
+    private void initBtns(){
+        setContentView(R.layout.activity_clipboard);
+        FonteF = findViewById(R.id.desactiveFonte);
+        FonteT = findViewById(R.id.activeFonte);
+    }
+
+    private void openFonteInfo(){
+        Toast.makeText(this, "Fonte info window", Toast.LENGTH_SHORT).show();
+    }
+    private  void showBtns(){
         visitedFonte = getIntent().getBooleanExtra("fonte",false);
         if (visitedFonte){
             FonteF.setVisibility(View.GONE);
@@ -33,14 +45,5 @@ public class Clipboard extends AppCompatActivity {
         }else {
             FonteT.setVisibility(View.GONE);
         }
-    }
-    private void initBtns(){
-        setContentView(R.layout.activity_clipboard);
-        FonteF = findViewById(R.id.desactiveFonte);
-        FonteT = findViewById(R.id.activeFonte);
-    }
-
-    private void openFonteInfo(){
-        Toast.makeText(this, "Fonte info window", Toast.LENGTH_SHORT).show();
     }
 }

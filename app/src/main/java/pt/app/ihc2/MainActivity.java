@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button cameraBtn;
     private Button clipboardBtn;
     private Button caminhadaBtn;
-    private boolean visitedFonte = true;
+    private boolean visitedFonte = false;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -51,6 +51,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initBtn();
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        getLastLocation();
+
+
+
+    }
+    public void initBtn(){
         cameraBtn = findViewById(R.id.cameraBtn);
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,12 +75,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 openClipBoar();
             }
         });
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        getLastLocation();
-
-
-
     }
     public void openClipBoar(){
         Intent intent = new Intent(this,Clipboard.class);
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
-
+        //-------------- Markers ---------
 
         //fazer marker estatico
         LatLng botanicoFonte = new LatLng(40.2058, -8.4214);
@@ -115,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerOptions optionsFonte = new MarkerOptions().position(botanicoFonte).title("Botanico");
         optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
         markerFonte = myMap.addMarker(optionsFonte);
-
 
         // current location
         LatLng current = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
@@ -133,11 +135,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public boolean onMarkerClick(Marker marker) {
                 if (marker.equals(markerFonte)) {
                     Toast.makeText(getBaseContext(), "Fonte info window", Toast.LENGTH_SHORT).show();
+
                     return true;
                 }
                 return false;
             }
         });
+        //------------------------------------
 
 
     }

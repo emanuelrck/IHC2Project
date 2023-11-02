@@ -1,5 +1,6 @@
 package pt.app.ihc2
 
+
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +12,8 @@ import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
 import io.github.sceneview.math.Position
 
+
+//get models 3d https://sketchfab.com/3d-models/leptinotarsa-decemlineata-4c23e2622a8749979f49ad1632cab94d
 class Camerak3 : AppCompatActivity() {
 
     private lateinit var sceneView: ArSceneView
@@ -25,15 +28,11 @@ class Camerak3 : AppCompatActivity() {
             this.lightEstimationMode = Config.LightEstimationMode.DISABLED
         }
 
-
-
         placeButton = findViewById(R.id.place)
 
         placeButton.setOnClickListener {
             placeModel()
         }
-
-
 
         modelNode = ArModelNode(sceneView.engine,PlacementMode.INSTANT).apply {
             loadModelGlbAsync(

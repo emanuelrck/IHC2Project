@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button cameraBtn;
     private Button clipboardBtn;
     private Button caminhadaBtn;
+    private boolean visitedFonte = true;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -57,14 +58,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
         caminhadaBtn = findViewById(R.id.caminhoBtn);
         clipboardBtn = findViewById(R.id.inventarioBtn);
+        clipboardBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                openClipBoar();
+            }
+        });
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         getLastLocation();
 
 
+
+    }
+    public void openClipBoar(){
+        Intent intent = new Intent(this,Clipboard.class);
+        intent.putExtra("fonte",visitedFonte);
+        startActivity(intent);
     }
     public void openCamera(){
-        Intent intent = new Intent(this,Camerak3.class );
+        Intent intent = new Intent(this,Camerak3.class);
         startActivity(intent);
     }
     private void getLastLocation() {

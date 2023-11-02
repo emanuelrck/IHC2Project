@@ -17,13 +17,10 @@ class Camerak3 : AppCompatActivity() {
     lateinit var placeButton: ExtendedFloatingActionButton
     private lateinit var modelNode: ArModelNode
 
-    private lateinit var mediaPlayer:MediaPlayer
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        var a = findViewById<ArSceneView>(R.id.sceneView);
+        setContentView(R.layout.activity_camerak3)
         sceneView = findViewById<ArSceneView?>(R.id.sceneView).apply {
             this.lightEstimationMode = Config.LightEstimationMode.DISABLED
         }
@@ -64,15 +61,6 @@ class Camerak3 : AppCompatActivity() {
 
         sceneView.planeRenderer.isVisible = false
 
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mediaPlayer.stop()
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        mediaPlayer.release()
     }
 
 }

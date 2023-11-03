@@ -35,12 +35,18 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    private  Marker currentMarker;
+
     private static final double EARTH_RADIUS = 6371000;
     private static final double DISTANCE_POINT = 5;//metros
     private final int FINE_PERMISSION_CODE = 1;
@@ -70,11 +76,63 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initBtn();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Initialize LocationRequest for continuous updates
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000); // Update interval in milliseconds (e.g., every 10 seconds)
+        locationRequest.setFastestInterval(5000); // Fastest update interval
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        // Initialize LocationCallback
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    currentLocation = location;
+                    updateMapWithNewLocation(); // Call a method to update the map with the new location
+                }
+            }
+        };
+
         getLastLocation();
-
-
-
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Start receiving location updates when the activity is in the foreground
+        startLocationUpdates();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Stop receiving location updates when the activity is in the background
+        stopLocationUpdates();
+    }
+
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+        }
+    }
+
+    private void stopLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
+
+    // Method to update the map with the new current location
+    private void updateMapWithNewLocation() {
+        if (myMap != null) {
+            current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            currentMarker.setPosition(current);
+            // Update the map with the new current location as needed
+            // For example, you can update the marker's position on the map.
+        }
+    }
+
     public void initBtn(){
         cameraBtn = findViewById(R.id.cameraBtn);
         caminhadaBtn = findViewById(R.id.caminhoBtn);
@@ -161,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current, 17.0f));
         MarkerOptions optionsCurrent = new MarkerOptions().position(current).title("currentLocation");
         optionsCurrent.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        myMap.addMarker(optionsCurrent);
+        currentMarker = myMap.addMarker(optionsCurrent);
 
         int cont = 0;
         for (LatLng point : referencePoints ) {

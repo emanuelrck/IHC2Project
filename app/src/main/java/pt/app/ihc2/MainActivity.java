@@ -41,6 +41,8 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private static final double EARTH_RADIUS = 6371000;
+    private static final double DISTANCE_POINT = 5;//metros
     private final int FINE_PERMISSION_CODE = 1;
     private GoogleMap myMap;
     private Marker markerFonte;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button cameraBtn;
     private Button clipboardBtn;
     private Button caminhadaBtn;
+    private List <Boolean> visitedPlaces = new ArrayList<>();
     private boolean visitedFonte = true;
     private boolean visitedArv = false;
     Location currentLocation;
@@ -137,15 +140,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // FONTE
         LatLng botanicoFonte = new LatLng(40.2058, -8.4214);
         referencePoints.add(botanicoFonte);
+        visitedPlaces.add(true); //TODO: ONLY TRUE TO DEMO PORPOSE
         MarkerOptions optionsFonte = new MarkerOptions().position(botanicoFonte).title("Botanico");
-        optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
+        if(visitedFonte) optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
+        else optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.unknown1));
         markerFonte = myMap.addMarker(optionsFonte);
+
 
         //ARVORE
         LatLng botanicoArv = new LatLng(40.2050, -8.4210);
         referencePoints.add(botanicoArv);
+        visitedPlaces.add(false);
         MarkerOptions optionsArv = new MarkerOptions().position(botanicoArv).title("Arvore");
-        optionsArv.icon(BitmapDescriptorFactory.fromResource(R.drawable.arvoreflor));
+        if(visitedArv)optionsArv.icon(BitmapDescriptorFactory.fromResource(R.drawable.arvoreflor));
+        else optionsArv.icon(BitmapDescriptorFactory.fromResource(R.drawable.unknown1));
         markerArv = myMap.addMarker(optionsArv);
 
         // current location
@@ -154,6 +162,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerOptions optionsCurrent = new MarkerOptions().position(current).title("currentLocation");
         optionsCurrent.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         myMap.addMarker(optionsCurrent);
+
+        int cont = 0;
+        for (LatLng point : referencePoints ) {
+            if (calculateDistance(current, point) < DISTANCE_POINT) {
+                visitedPlaces.set(cont, true);
+                cont++;
+            }
+        }
 
         myMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -236,6 +252,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 last = point;
             }
         }
+    }
+    public static double calculateDistance(LatLng from, LatLng to) {
+        double lat1 = Math.toRadians(from.latitude);
+        double lon1 = Math.toRadians(from.longitude);
+        double lat2 = Math.toRadians(to.latitude);
+        double lon2 = Math.toRadians(to.longitude);
+
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return EARTH_RADIUS * c;
     }
 
 }

@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Clipboard">
+    tools:context=".Clipboard"
+    android:background="@color/grey">
 
     <Button
         android:id="@+id/activeFonte"
@@ -16,13 +17,14 @@
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.131"
+        app:layout_constraintHorizontal_bias="0.208"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.943"
+        app:layout_constraintVertical_bias="0.101"
         app:layout_editor_absoluteX="35dp"
         app:layout_editor_absoluteY="632dp"
         tools:ignore="MissingConstraints" />
+
     <Button
         android:id="@+id/desactiveFonte"
         android:layout_width="76dp"
@@ -31,11 +33,57 @@
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.131"
+        app:layout_constraintHorizontal_bias="0.208"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.943"
+        app:layout_constraintVertical_bias="0.101"
         app:layout_editor_absoluteX="35dp"
         app:layout_editor_absoluteY="632dp"
         tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/activeArv"
+        android:layout_width="76dp"
+        android:layout_height="61dp"
+        android:background="@drawable/arvoreflor"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.791"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.101"
+        app:layout_editor_absoluteX="35dp"
+        app:layout_editor_absoluteY="632dp"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/desactiveArv"
+        android:layout_width="76dp"
+        android:layout_height="61dp"
+        android:background="@drawable/unknown"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.791"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.101"
+        app:layout_editor_absoluteX="35dp"
+        app:layout_editor_absoluteY="632dp"
+        tools:ignore="MissingConstraints" />
+    <Button
+        android:id="@+id/voltar"
+        android:layout_width="76dp"
+        android:layout_height="61dp"
+        android:text="Voltar"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.939"
+        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

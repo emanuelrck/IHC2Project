@@ -1,9 +1,9 @@
 package pt.app.ihc2
 
 
-import android.media.MediaPlayer
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.ar.core.Config
@@ -24,6 +24,18 @@ class Camerak3 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camerak3)
+
+        var numeroModelo = getIntent().getIntExtra("numeroModelo",0)
+        var modeloS = ""
+        if (numeroModelo == 1){
+            modeloS = "models/beetles.glb"
+        }else if (numeroModelo == 2){
+            modeloS = "models/arvore.glb"
+        }else{
+            Toast.makeText(this, "Não existem modelos proximos", Toast.LENGTH_SHORT).show();
+            onBackPressed();
+        }
+
         sceneView = findViewById<ArSceneView?>(R.id.sceneView).apply {
             this.lightEstimationMode = Config.LightEstimationMode.DISABLED
         }
@@ -36,7 +48,7 @@ class Camerak3 : AppCompatActivity() {
 
         modelNode = ArModelNode(sceneView.engine,PlacementMode.INSTANT).apply {
             loadModelGlbAsync(
-                glbFileLocation = "models/beetles.glb",
+                glbFileLocation = modeloS,
                 scaleToUnits = 1f,
                 centerOrigin = Position(-0.5f)
 

@@ -26,17 +26,17 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:gravity="center"
         android:text="O Jardim data do século XVIII e foi construído por ordem do Marquês de Pombal, com a finalidade de criar e estudar plantas para fins medicinais. Atualmente, trata-se de um espaço verde imperdível, no centro de Coimbra. Quanto ao fontanário, presume-se que seja da autoria de Álvaro da Fonseca e que foi aqui colocado em 1949, por cima de um tanque já existente."
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        android:layout_margin="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.295" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/voltar"
@@ -50,7 +50,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.894"
+        app:layout_constraintVertical_bias="0.976"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

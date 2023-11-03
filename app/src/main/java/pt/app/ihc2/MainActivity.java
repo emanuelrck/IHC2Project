@@ -43,6 +43,8 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+    //NUMERO DO MODELO 0 -> NONE; 1-> INSETOS -> NA FONTE; 2->...->NA ARVORE
+
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     private  Marker currentMarker;
@@ -165,6 +167,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     public void openCamera(){
         Intent intent = new Intent(this,Camerak3.class);
+        int numeroModelo = 0;
+        double smallestdist = DISTANCE_POINT;
+        int cont = 0;
+        for (LatLng point : referencePoints ) {
+            cont++;
+            if((calculateDistance(current, point) < smallestdist)){
+                numeroModelo = cont;
+            }
+        }
+
+        numeroModelo = 1;//TODO: PARA DEMO alterar
+        intent.putExtra("numeroModelo",numeroModelo);
         startActivity(intent);
     }
     private void getLastLocation() {

@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Initialize LocationRequest for continuous updates
-        locationRequest = new LocationRequest();
+        locationRequest = new LocationRequest(); //TODO: CHANGE FOR UPDATING LOCATION
         locationRequest.setInterval(10000); // Update interval in milliseconds (e.g., every 10 seconds)
         locationRequest.setFastestInterval(5000); // Fastest update interval
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -130,6 +130,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (myMap != null) {
             current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             currentMarker.setPosition(current);
+            int cont = 0;
+            for (LatLng point : referencePoints ) {
+                if (calculateDistance(current, point) < DISTANCE_POINT) {
+                    visitedPlaces.set(cont, true);
+                    if(cont == 0) {
+                        markerFonte.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
+                    }
+                    if (cont == 1) {
+                        markerArv.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.arvoreflor));
+                    }
+
+                }
+                cont++;
+            }
+
+
             // Update the map with the new current location as needed
             // For example, you can update the marker's position on the map.
         }
@@ -161,8 +177,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     public void openClipBoar(){
         Intent intent = new Intent(this,Clipboard.class);
-        intent.putExtra("fonte",visitedFonte);
-        intent.putExtra("arvore",visitedArv);
+        intent.putExtra("fonte",visitedPlaces.get(0));
+        intent.putExtra("arvore",visitedPlaces.get(1));
         startActivity(intent);
     }
     public void openCamera(){
@@ -170,14 +186,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int numeroModelo = 0;
         double smallestdist = DISTANCE_POINT;
         int cont = 0;
+        double distancapoints;
         for (LatLng point : referencePoints ) {
             cont++;
-            if((calculateDistance(current, point) < smallestdist)){
+            distancapoints = calculateDistance(current, point);
+            if(distancapoints < smallestdist){
                 numeroModelo = cont;
+                smallestdist = distancapoints;
             }
         }
 
-        numeroModelo = 1;//TODO: PARA DEMO alterar
+        //numeroModelo = 2;//TODO: PARA DEMO alterar
         intent.putExtra("numeroModelo",numeroModelo);
         startActivity(intent);
     }
@@ -210,21 +229,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //fazer marker estatico
         // FONTE
-        LatLng botanicoFonte = new LatLng(40.2058, -8.4214);
+        LatLng botanicoFonte = new LatLng(40.186748,-8.415701);
         referencePoints.add(botanicoFonte);
-        visitedPlaces.add(true); //TODO: ONLY TRUE TO DEMO PORPOSE
+        //visitedPlaces.add(true); //TODO: ONLY TRUE TO DEMO PORPOSE
+        visitedPlaces.add(false);
         MarkerOptions optionsFonte = new MarkerOptions().position(botanicoFonte).title("Botanico");
-        if(visitedFonte) optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
+        if(visitedPlaces.get(0)) optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
         else optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.unknown1));
         markerFonte = myMap.addMarker(optionsFonte);
 
 
         //ARVORE
-        LatLng botanicoArv = new LatLng(40.2050, -8.4210);
+        LatLng botanicoArv = new LatLng(40.186580,-8.415696);
         referencePoints.add(botanicoArv);
         visitedPlaces.add(false);
         MarkerOptions optionsArv = new MarkerOptions().position(botanicoArv).title("Arvore");
-        if(visitedArv)optionsArv.icon(BitmapDescriptorFactory.fromResource(R.drawable.arvoreflor));
+        if(visitedPlaces.get(1))optionsArv.icon(BitmapDescriptorFactory.fromResource(R.drawable.arvoreflor));
         else optionsArv.icon(BitmapDescriptorFactory.fromResource(R.drawable.unknown1));
         markerArv = myMap.addMarker(optionsArv);
 
@@ -235,13 +255,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         optionsCurrent.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         currentMarker = myMap.addMarker(optionsCurrent);
 
-        int cont = 0;
-        for (LatLng point : referencePoints ) {
-            if (calculateDistance(current, point) < DISTANCE_POINT) {
-                visitedPlaces.set(cont, true);
-                cont++;
-            }
-        }
+
 
         myMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override

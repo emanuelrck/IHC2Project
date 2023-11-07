@@ -72,10 +72,11 @@
         app:layout_editor_absoluteX="35dp"
         app:layout_editor_absoluteY="632dp"
         tools:ignore="MissingConstraints" />
+
     <Button
         android:id="@+id/voltar"
-        android:layout_width="76dp"
-        android:layout_height="61dp"
+        android:layout_width="95dp"
+        android:layout_height="58dp"
         android:text="Voltar"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"

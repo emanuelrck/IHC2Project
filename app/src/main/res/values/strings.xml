@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">IHC2</string>
     <string name="my_map_api_key">AIzaSyBvkqVWFg57ZSP9Z_-EyCFeFk8yDJkAdfs</string>
+    <string name="logo">logo</string>
+    <string name="loading">LOADING</string>
+    <string name="continuar">Continuar</string>
+    <string name="instrucoes">Instruções</string>
 </resources>

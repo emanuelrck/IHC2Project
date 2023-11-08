@@ -1,4 +1,5 @@
 package pt.app.ihc2;
+
 import android.os.AsyncTask;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,6 +39,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
-    private  Marker currentMarker;
+    private Marker currentMarker;
 
     private static final double EARTH_RADIUS = 6371000;
     private static final double DISTANCE_POINT = 5;//metros
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button cameraBtn;
     private Button clipboardBtn;
     private Button caminhadaBtn;
-    private List <Boolean> visitedPlaces = new ArrayList<>();
+    private List<Boolean> visitedPlaces = new ArrayList<>();
     private boolean visitedFonte = true;
     private boolean visitedArv = false;
     Location currentLocation;
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         getLastLocation();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -131,10 +134,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             currentMarker.setPosition(current);
             int cont = 0;
-            for (LatLng point : referencePoints ) {
+            for (LatLng point : referencePoints) {
                 if (calculateDistance(current, point) < DISTANCE_POINT) {
                     visitedPlaces.set(cont, true);
-                    if(cont == 0) {
+                    if (cont == 0) {
                         markerFonte.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
                     }
                     if (cont == 1) {
@@ -151,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void initBtn(){
+    public void initBtn() {
         cameraBtn = findViewById(R.id.cameraBtn);
         caminhadaBtn = findViewById(R.id.caminhoBtn);
         clipboardBtn = findViewById(R.id.inventarioBtn);
@@ -168,38 +171,41 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 makepath();
             }
         });
-        clipboardBtn.setOnClickListener(new View.OnClickListener(){
+        clipboardBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openClipBoar();
             }
         });
     }
-    public void openClipBoar(){
-        Intent intent = new Intent(this,Clipboard.class);
-        intent.putExtra("fonte",visitedPlaces.get(0));
-        intent.putExtra("arvore",visitedPlaces.get(1));
+
+    public void openClipBoar() {
+        Intent intent = new Intent(this, Clipboard.class);
+        intent.putExtra("fonte", visitedPlaces.get(0));
+        intent.putExtra("arvore", visitedPlaces.get(1));
         startActivity(intent);
     }
-    public void openCamera(){
-        Intent intent = new Intent(this,Camerak3.class);
+
+    public void openCamera() {
+        Intent intent = new Intent(this, Camerak3.class);
         int numeroModelo = 0;
         double smallestdist = DISTANCE_POINT;
         int cont = 0;
         double distancapoints;
-        for (LatLng point : referencePoints ) {
+        for (LatLng point : referencePoints) {
             cont++;
             distancapoints = calculateDistance(current, point);
-            if(distancapoints < smallestdist){
+            if (distancapoints < smallestdist) {
                 numeroModelo = cont;
                 smallestdist = distancapoints;
             }
         }
 
         //numeroModelo = 2;//TODO: PARA DEMO alterar
-        intent.putExtra("numeroModelo",numeroModelo);
+        intent.putExtra("numeroModelo", numeroModelo);
         startActivity(intent);
     }
+
     private void getLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE); // AQUI DIFERENTE
@@ -209,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                if (location != null){
+                if (location != null) {
                     currentLocation = location;
 
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -218,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
@@ -229,32 +236,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //fazer marker estatico
         // FONTE
-        LatLng botanicoFonte = new LatLng(40.186748,-8.415701);
+        LatLng botanicoFonte = new LatLng(40.186748, -8.415701);
         referencePoints.add(botanicoFonte);
         //visitedPlaces.add(true); //TODO: ONLY TRUE TO DEMO PORPOSE
         visitedPlaces.add(false);
         MarkerOptions optionsFonte = new MarkerOptions().position(botanicoFonte).title("Botanico");
-        if(visitedPlaces.get(0)) optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
+        if (visitedPlaces.get(0))
+            optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.fonte_marker));
         else optionsFonte.icon(BitmapDescriptorFactory.fromResource(R.drawable.unknown1));
         markerFonte = myMap.addMarker(optionsFonte);
 
 
         //ARVORE
-        LatLng botanicoArv = new LatLng(40.186580,-8.415696);
+        LatLng botanicoArv = new LatLng(40.186580, -8.415696);
         referencePoints.add(botanicoArv);
         visitedPlaces.add(false);
         MarkerOptions optionsArv = new MarkerOptions().position(botanicoArv).title("Arvore");
-        if(visitedPlaces.get(1))optionsArv.icon(BitmapDescriptorFactory.fromResource(R.drawable.arvoreflor));
+        if (visitedPlaces.get(1))
+            optionsArv.icon(BitmapDescriptorFactory.fromResource(R.drawable.arvoreflor));
         else optionsArv.icon(BitmapDescriptorFactory.fromResource(R.drawable.unknown1));
         markerArv = myMap.addMarker(optionsArv);
 
         // current location
-        current = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
+        current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current, 17.0f));
         MarkerOptions optionsCurrent = new MarkerOptions().position(current).title("currentLocation");
         optionsCurrent.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         currentMarker = myMap.addMarker(optionsCurrent);
-
 
 
         myMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -274,11 +282,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == FINE_PERMISSION_CODE){
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == FINE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
-            } else{
-                Toast.makeText(this,"Location permission is denied, please allow the permission", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Location permission is denied, please allow the permission", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -295,15 +303,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         int id = item.getItemId();
 
-        if (id == R.id.arvore){
+        if (id == R.id.arvore) {
             //mostrar arvore info
-        }
-        else if (id == R.id.fontanario){
+        } else if (id == R.id.fontanario) {
             //mostrar fonte info
         }
 
         return super.onOptionsItemSelected(item);
     }
+
     private void drawLineBetweenMarkers(LatLng orig, LatLng dest) {
         if (myMap != null) {
 
@@ -311,9 +319,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .add(orig, dest)
                     .width(5) // Line width
                     .color(Color.GREEN); // Line color
-          polylines.add(myMap.addPolyline(polylineOptions));
+            polylines.add(myMap.addPolyline(polylineOptions));
         }
     }
+
     private void clearPreviousPolylines() {
         for (Polyline polyline : polylines) {
             polyline.remove();
@@ -321,24 +330,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         polylines.clear(); // Clear the list
     }
 
-    private void makepath(){
+    private void makepath() {
         LatLng last = current;
-        if(polylines.size() == 0){
-            for (LatLng point : referencePoints ) {
-               drawLineBetweenMarkers(last,point);
-               last = point;
+        if (polylines.size() == 0) {
+            for (LatLng point : referencePoints) {
+                drawLineBetweenMarkers(last, point);
+                last = point;
             }
 
-        }else if (polylines.size() == referencePoints.size()){
+        } else if (polylines.size() == referencePoints.size()) {
             clearPreviousPolylines();
-        }else {
+        } else {
             clearPreviousPolylines();
-            for (LatLng point : referencePoints ) {
-                drawLineBetweenMarkers(last,point);
+            for (LatLng point : referencePoints) {
+                drawLineBetweenMarkers(last, point);
                 last = point;
             }
         }
     }
+
     public static double calculateDistance(LatLng from, LatLng to) {
         double lat1 = Math.toRadians(from.latitude);
         double lon1 = Math.toRadians(from.longitude);

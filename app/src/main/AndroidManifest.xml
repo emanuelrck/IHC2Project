@@ -24,6 +24,9 @@
         android:theme="@style/MyMaterialTheme"
         tools:targetApi="31">
         <activity
+            android:name=".Guidelines"
+            android:exported="false" />
+        <activity
             android:name=".FonteInfo"
             android:exported="false"
             android:theme="@style/Theme.AppCompat" />
@@ -47,6 +50,10 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat"></activity>
+        <activity
+            android:name=".LoadingScreen"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
